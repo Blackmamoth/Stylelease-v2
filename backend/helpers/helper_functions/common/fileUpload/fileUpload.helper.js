@@ -1,5 +1,6 @@
-const path = require("path");
 const httpErrors = require("http-errors");
+const path = require("path");
+const fs = require("fs");
 
 const saveFilesToDisk = (files) => {
   try {
@@ -31,4 +32,26 @@ const saveFilesToDisk = (files) => {
   }
 };
 
-module.exports = { saveFilesToDisk };
+const removeFilesFromDisk = (files) => {
+  try {
+    files.forEach((file) => {
+      const filePath = path.join(
+        path.dirname(require.main.filename),
+        "public",
+        "media",
+        file
+      );
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          throw httpErrors.InternalServerError(
+            "An error occured while deleting images"
+          );
+        }
+      });
+    });
+  } catch (error) {
+    throw httpErrors.InternalServerError(error);
+  }
+};
+
+module.exports = { saveFilesToDisk, removeFilesFromDisk };

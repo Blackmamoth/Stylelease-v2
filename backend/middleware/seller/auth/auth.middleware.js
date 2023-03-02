@@ -20,7 +20,6 @@ const sellerProtectedRoute = asyncHandler(async (req, res, next) => {
         .select("-password");
       next();
     } catch (error) {
-      console.log(error);
       throw httpErrors.Unauthorized("Request not authorized");
     }
   }

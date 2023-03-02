@@ -14,4 +14,25 @@ router.post(
   inventoryController.addProduct
 );
 
+router.post(
+  "/get-products",
+  authMiddleware.sellerProtectedRoute,
+  inventoryController.getProducts
+);
+
+router.patch(
+  "/update-product",
+  authMiddleware.sellerProtectedRoute,
+  fileUpload({ createParentPath: true }),
+  fileUploadMiddleware.fileExtensionLimiter,
+  fileUploadMiddleware.filenameMiddleware,
+  inventoryController.updateProduct
+);
+
+router.delete(
+  "/delete-product",
+  authMiddleware.sellerProtectedRoute,
+  inventoryController.deleteProduct
+);
+
 module.exports = router;

@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const httpErrors = require("http-errors");
 const { connectDB } = require("./config/db.config");
 const colorette = require("colorette");
+const path = require("path");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -24,14 +25,20 @@ app.use(
   require("./routes/seller/inventory/inventory.route")
 );
 
+// Render media through the server
+app.use(
+  "/media/images",
+  express.static(path.join(__dirname, "public", "media"))
+);
+
 app.use(async (req, res, next) => {
   next(httpErrors.NotFound(`Route not found for [${req.method}] ${req.url}`));
 });
 
+// Common error handler
 app.use((error, req, res, next) => {
   const message =
     error?.message || `Cannot resolve request [${req.method}] ${req.url}`;
-  console.log(error);
   if (res.headersSent === false) {
     res.send({
       error: true,

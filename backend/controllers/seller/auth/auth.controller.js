@@ -81,7 +81,10 @@ const loginSeller = asyncHandler(async (req, res) => {
 });
 
 const refreshSellerToken = asyncHandler(async (req, res) => {
-  const refreshToken = req?.signedCookies?.refresh_token.toString();
+  const refreshToken = req?.signedCookies?.refresh_token?.toString();
+  if (!refreshToken) {
+    throw httpErrors.Unauthorized("Request not authorized, no token");
+  }
   const token = await refreshTokenModel.findOne({
     refreshToken: refreshToken,
     userType: "SELLER",
