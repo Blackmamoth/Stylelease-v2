@@ -4,6 +4,16 @@ const fs = require("fs");
 
 const saveFilesToDisk = (files) => {
   try {
+    const mediaPath = path.join(
+      path.dirname(require.main.filename),
+      "public",
+      "media"
+    );
+    if (!fs.existsSync(mediaPath)) {
+      fs.mkdir(mediaPath, { recursive: true }, (err) => {
+        if (err) throw httpErrors.InternalServerError(err);
+      });
+    }
     if (files?.length) {
       Object.keys(files).forEach((key) => {
         const filepath = path.join(
