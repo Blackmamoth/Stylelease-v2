@@ -25,6 +25,9 @@ app.use(
   require("./routes/seller/inventory/inventory.route")
 );
 
+// Renter's auth routes
+app.use("/renter/auth", require("./routes/renter/auth/auth.route"));
+
 // Render media through the server
 app.use(
   "/media/images",
