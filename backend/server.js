@@ -28,6 +28,9 @@ app.use(
 // Renter's auth routes
 app.use("/renter/auth", require("./routes/renter/auth/auth.route"));
 
+// Renter's rent crud routes
+app.use("/renter/rents", require("./routes/renter/rent/rent.route"));
+
 // Render media through the server
 app.use(
   "/media/images",
