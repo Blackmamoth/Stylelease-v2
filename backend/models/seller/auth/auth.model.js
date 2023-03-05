@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const Seller = new mongoose.Schema(
+const SellerSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -16,6 +16,10 @@ const Seller = new mongoose.Schema(
       type: String,
       required: true,
     },
+    phoneNumber: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: true,
@@ -26,7 +30,7 @@ const Seller = new mongoose.Schema(
   }
 );
 
-Seller.pre("save", async function (next) {
+SellerSchema.pre("save", async function (next) {
   let seller = this;
   if (!seller.isModified()) return next();
   const salt = await bcrypt.genSalt();
@@ -35,6 +39,6 @@ Seller.pre("save", async function (next) {
   next();
 });
 
-const sellerModel = mongoose.model("seller", Seller);
+const sellerModel = mongoose.model("seller", SellerSchema);
 
 module.exports = { sellerModel };

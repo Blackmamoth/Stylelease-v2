@@ -23,15 +23,25 @@ const registerSeller = asyncHandler(async (req, res) => {
     res.status(400);
     throw httpErrors.Conflict(`Email ${sellerDetails.email} is already in use`);
   }
-  const seller = await sellerModel.create(sellerDetails);
+  const seller = new sellerModel({
+    username: sellerDetails.username,
+    email: sellerDetails.email,
+    phoneNumber: sellerDetails.phoneNumber,
+    storeName: sellerDetails.storeName,
+    password: sellerDetails.password,
+  });
+  const storeSellerDetails = await seller.save().catch((err) => {
+    res.status(500);
+    throw httpErrors.InternalServerError(err);
+  });
   res.status(201).send({
     error: false,
     data: {
       sellerDetails: {
-        _id: seller._id,
-        username: seller.username,
-        email: seller.email,
-        storeName: seller.storeName,
+        _id: storeSellerDetails._id,
+        username: storeSellerDetails.username,
+        email: storeSellerDetails.email,
+        storeName: storeSellerDetails.storeName,
       },
       message: "You are successfully registered",
     },
@@ -50,6 +60,13 @@ const loginSeller = asyncHandler(async (req, res) => {
     );
   }
   if (await bcrypt.compare(sellerDetails.password, seller.password)) {
+    const sellerRefreshTokens = await refreshTokenModel.find({
+      userId: seller._id,
+      userType: "SELLER",
+    });
+    if (sellerRefreshTokens?.length) {
+      sellerRefreshTokens.forEach(async (token) => await token.delete());
+    }
     const access_token = generateAccessToken(seller);
     const refresh_token = await generateRefreshToken(seller);
     res

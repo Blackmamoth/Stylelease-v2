@@ -3,10 +3,10 @@ const { joiPasswordExtendCore } = require("joi-password");
 const joiPassword = joi.extend(joiPasswordExtendCore);
 joi.objectId = require("joi-objectid")(joi);
 
-const sellerRegisterationSchema = joi.object({
+const renterRegisterationSchema = joi.object({
   username: joi.string().trim().required(),
   email: joi.string().email().trim().required(),
-  storeName: joi.string().trim().required(),
+  address: joi.string().trim(),
   phoneNumber: joi
     .string()
     .trim()
@@ -25,7 +25,7 @@ const sellerRegisterationSchema = joi.object({
     .required(),
 });
 
-const sellerLoginSchema = joi.object({
+const renterLoginSchema = joi.object({
   email: joi.string().email().trim().required(),
   password: joiPassword
     .string()
@@ -41,6 +41,6 @@ const sellerLoginSchema = joi.object({
 });
 
 module.exports = {
-  sellerRegisterationSchema,
-  sellerLoginSchema,
+  renterRegisterationSchema,
+  renterLoginSchema,
 };
