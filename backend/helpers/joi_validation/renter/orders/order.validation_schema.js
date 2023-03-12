@@ -14,7 +14,7 @@ const productDetailsSchema = joi.object({
     .required(),
 });
 
-const rentClothesSchema = joi.object({
+const orderClothesSchema = joi.object({
   productDetails: productDetailsSchema.required(),
   renterId: joi.objectId().required(),
   totalPrice: joi.number().min(100).required(),
@@ -23,6 +23,20 @@ const rentClothesSchema = joi.object({
   status: joi.string().trim().valid("PLACED").default("PLACED"),
 });
 
+const getOrdersSchema = joi.object({
+  orderId: joi.objectId().allow(null).default(null),
+  productId: joi.objectId().allow(null).default(null),
+  rentStartDate: joi.date().allow(null).default(null),
+  rentEndDate: joi.date().allow(null).default(null),
+  status: joi
+    .string()
+    .trim()
+    .valid("PLACED", "SHIPPED", "DELIVERED", "RETURNED", "CANCELLED")
+    .allow(null)
+    .default(null),
+});
+
 module.exports = {
-  rentClothesSchema,
+  orderClothesSchema,
+  getOrdersSchema,
 };

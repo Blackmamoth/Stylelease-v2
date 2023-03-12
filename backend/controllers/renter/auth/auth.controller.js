@@ -21,7 +21,6 @@ const registerRenter = asyncHandler(async (req, res) => {
     email: renterDetails.email,
   });
   if (renterExists?.length) {
-    res.status(409);
     throw httpErrors.Conflict(`Email ${renterDetails.email} is already in use`);
   }
   const renter = new renterModel({
@@ -31,7 +30,6 @@ const registerRenter = asyncHandler(async (req, res) => {
     phoneNumber: renterDetails.phoneNumber,
   });
   const storeRenterDetails = await renter.save().catch((error) => {
-    res.status(500);
     throw httpErrors.InternalServerError(error);
   });
   if (!res.headersSent) {
@@ -56,7 +54,6 @@ const loginRenter = asyncHandler(async (req, res) => {
   );
   const renter = await renterModel.findOne({ email: renterDetails.email });
   if (!renter) {
-    res.status(400);
     throw httpErrors.NotFound(
       "Renter not found, Please check your Email and try again"
     );
@@ -94,7 +91,6 @@ const loginRenter = asyncHandler(async (req, res) => {
         },
       });
   } else {
-    res.status(401);
     throw httpErrors.Unauthorized("Incorrect password");
   }
 });
@@ -103,7 +99,6 @@ const refreshRenterToken = asyncHandler(async (req, res) => {
   const refreshToken = req?.signedCookies?.refresh_token?.toString();
   const token = await refreshTokenModel.findOne({ refreshToken: refreshToken });
   if (!token) {
-    res.status(422);
     throw httpErrors.UnprocessableEntity("Cannot process JWT");
   }
   const verifyToken = jwt.verify(
@@ -113,7 +108,6 @@ const refreshRenterToken = asyncHandler(async (req, res) => {
   const renterId = verifyToken.renterId;
   const renter = await renterModel.findById(renterId);
   if (!renter) {
-    res.status(404);
     throw httpErrors.NotFound("Renter not found");
   }
   const access_token = generateAccessToken(renter);

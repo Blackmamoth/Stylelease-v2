@@ -15,8 +15,8 @@ const renterProtectedRoute = asyncHandler(async (req, res, next) => {
         token,
         process.env.RENTER_ACCESS_TOKEN_SECRET
       );
-      req.seller = await renterModel
-        .findById(verifyJWT?.sellerId)
+      req.renter = await renterModel
+        .findById(verifyJWT?.renterId)
         .select("-password");
       next();
     } catch (error) {

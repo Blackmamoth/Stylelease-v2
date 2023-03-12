@@ -6,6 +6,11 @@ const ProductSchema = new mongoose.Schema({
     required: true,
     ref: "seller_inventory",
   },
+  sellerId: {
+    type: mongoose.SchemaTypes.ObjectId,
+    required: true,
+    ref: "seller",
+  },
   quantity: {
     type: Number,
     required: true,

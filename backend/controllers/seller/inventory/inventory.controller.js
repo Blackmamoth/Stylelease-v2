@@ -18,7 +18,6 @@ const addProduct = asyncHandler(async (req, res) => {
     sellerId: req.seller._id,
   });
   if (productExists?.length) {
-    res.status(409);
     throw httpErrors.Conflict(
       `Product with title ${productDetails.title} already exists in your inventory`
     );
@@ -62,7 +61,7 @@ const getProducts = asyncHandler(async (req, res) => {
     .lean()
     .catch((error) => {
       throw httpErrors.UnprocessableEntity(
-        "Unable to retrieve products from the database"
+        "Unable to retrieve orders from the database. Please try again later."
       );
     });
   if (!res.headersSent) {
@@ -82,7 +81,6 @@ const updateProduct = asyncHandler(async (req, res) => {
     sellerId: req.seller._id,
   });
   if (isTitleTaken?.length) {
-    res.status(409);
     throw httpErrors.Conflict(
       `Product with title ${productDetails.title} already exists in your inventory`
     );

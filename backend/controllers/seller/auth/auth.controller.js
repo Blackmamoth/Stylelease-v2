@@ -20,7 +20,6 @@ const registerSeller = asyncHandler(async (req, res) => {
     email: sellerDetails.email,
   });
   if (checkSellerExists?.length) {
-    res.status(400);
     throw httpErrors.Conflict(`Email ${sellerDetails.email} is already in use`);
   }
   const seller = new sellerModel({
@@ -31,7 +30,6 @@ const registerSeller = asyncHandler(async (req, res) => {
     password: sellerDetails.password,
   });
   const storeSellerDetails = await seller.save().catch((err) => {
-    res.status(500);
     throw httpErrors.InternalServerError(err);
   });
   res.status(201).send({
@@ -43,7 +41,7 @@ const registerSeller = asyncHandler(async (req, res) => {
         email: storeSellerDetails.email,
         storeName: storeSellerDetails.storeName,
       },
-      message: "You are successfully registered",
+      message: "Registration successful",
     },
   });
 });
@@ -54,9 +52,8 @@ const loginSeller = asyncHandler(async (req, res) => {
   );
   const seller = await sellerModel.findOne({ email: sellerDetails.email });
   if (!seller) {
-    res.status(400);
     throw httpErrors.NotFound(
-      "Seller not found, Please check your Email and try again"
+      "Seller not found, please check your email and try again."
     );
   }
   if (await bcrypt.compare(sellerDetails.password, seller.password)) {
@@ -92,7 +89,6 @@ const loginSeller = asyncHandler(async (req, res) => {
         message: "Logged In successfully",
       });
   } else {
-    res.status(401);
     throw httpErrors.Unauthorized("Incorrect password");
   }
 });
@@ -107,7 +103,6 @@ const refreshSellerToken = asyncHandler(async (req, res) => {
     userType: "SELLER",
   });
   if (!token) {
-    res.status(422);
     throw httpErrors.UnprocessableEntity("Cannot process JWT");
   }
   const verifyToken = jwt.verify(
@@ -117,7 +112,6 @@ const refreshSellerToken = asyncHandler(async (req, res) => {
   const sellerId = verifyToken.sellerId;
   const seller = await sellerModel.findById(sellerId);
   if (!seller) {
-    res.status(404);
     throw httpErrors.NotFound("Thread Lord not found");
   }
   const access_token = generateAccessToken(seller);

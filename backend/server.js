@@ -25,11 +25,14 @@ app.use(
   require("./routes/seller/inventory/inventory.route")
 );
 
+// Seller's order routes
+app.use("/seller/orders", require("./routes/seller/orders/orders.route"));
+
 // Renter's auth routes
 app.use("/renter/auth", require("./routes/renter/auth/auth.route"));
 
 // Renter's rent crud routes
-app.use("/renter/rents", require("./routes/renter/rent/rent.route"));
+app.use("/renter/orders", require("./routes/renter/orders/order.route"));
 
 // Render media through the server
 app.use(
@@ -43,6 +46,7 @@ app.use(async (req, res, next) => {
 
 // Common error handler
 app.use((error, req, res, next) => {
+  res.status(error?.status || 500);
   const message =
     error?.message || `Cannot resolve request [${req.method}] ${req.url}`;
   if (res.headersSent === false) {
